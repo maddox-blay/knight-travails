@@ -15,25 +15,41 @@ def edge_generator((a,b))
   return valid_edges
 end
 
-def breadth_first(start, finish)
+def shortest_path(start, finish)
   visited_nodes = []
   queue = []
+  parents = {}
+  path = []
 
   visited_nodes << start
   queue << start
+  path << finish
 
   until queue.empty?
     current = queue.shift
-    puts "[#{current.join(",")}]"
+
+    if current == finish
+        until path.include? start
+          path << parents[current]
+          current = parents[current]
+        end
+        move = path.size == 2 ? "move" : "moves"
+        puts "you made it in #{path.size - 1} #{move} here's your path"
+        for coord in path.reverse
+          puts "[#{coord.join(",")}]"
+        end
+        return
+    end
+
     edge_generator(current).each do |neighbour|
       unless visited_nodes.include? neighbour
         visited_nodes << neighbour
         queue << neighbour
+        parents[neighbour] = current 
       end
     end
   end
+ return
 end
 
-breadth_first([3,4], [4,2])
-puts [" "," "]
-puts edge_generator [1,3]
+shortest_path([0,0], [7,7])
